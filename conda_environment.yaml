@@ -1,10 +1,12 @@
 name: ccxt_env
 dependencies:
   - python=3.6.0
-  - ccxt
   - numpy
   - scipy
   - matplotlib
   - pandas
-  - mpld3
-  - jinja2
+  - pip:
+    - ccxt
+    - mpld3
+    - jinja2
+    - ipykernel  #  to make the environment show up in jupyter notebook. execute: python -m ipykernel install --user --name myenv --display-name "Python (myenv)"
