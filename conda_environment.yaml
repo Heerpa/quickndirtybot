@@ -10,3 +10,4 @@ dependencies:
     - mpld3
     - jinja2
     - ipykernel  #  to make the environment show up in jupyter notebook. execute: python -m ipykernel install --user --name myenv --display-name "Python (myenv)"
+    - openpyxl
