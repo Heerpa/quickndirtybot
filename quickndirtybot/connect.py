@@ -87,8 +87,8 @@ def download_ohlcv(exchange, interval='1m', symbol='BTC/USD',
         except Exception as e:
             print('timeout, going on')
             print(e)
-        print('loop {:d}:'.format(i), 'time:', datetime.now())
-        print(filename+':', len(all_data), 'entries')
+        # print('loop {:d}:'.format(i), 'time:', datetime.now())
+        # print(filename+':', len(all_data), 'entries')
         i += 1
         time.sleep(30 * 60)  # every half an hour
 

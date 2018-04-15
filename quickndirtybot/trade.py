@@ -113,7 +113,6 @@ def trade(exchange, symbol, strategy_dict, filename='trade_gdax',
                     # do buy
                     price = eval_data.iloc[-1, hi_idx]
                     price = get_orderbook_now(exchange, 'BTC/USD')['bid_closest_price']
-                    print('buying. bid price is', price)
                     # add taker fee
                     price = price * (1+taker_fee)
                     if not np.isnan(price):
@@ -122,7 +121,7 @@ def trade(exchange, symbol, strategy_dict, filename='trade_gdax',
                             amount_buy_now = eval_data.iloc[-1, USD_idx] / price
                         else:
                             amount_buy_now = strategy_dict['amount_buy']
-                        print('buying', amount_buy_now, 'BTC')
+                        print('buying', amount_buy_now, 'BTC for', price, 'USD')
                         eval_data.iloc[-1, dUSD_idx] -= price*amount_buy_now
                         eval_data.iloc[-1, dBTC_idx] += amount_buy_now
                 if (eval_data.iloc[-1, sell_idx] == 1 and
@@ -130,13 +129,12 @@ def trade(exchange, symbol, strategy_dict, filename='trade_gdax',
                     # do sell
                     price = eval_data.iloc[-1, lo_idx]
                     price = get_orderbook_now(exchange, 'BTC/USD')['ask_closest_price']
-                    print('selling. ask price is', price)
                     if not np.isnan(price):
                         if strategy_dict['amount_sell'] > eval_data.iloc[-1, BTC_idx]:
                             amount_sell_now = eval_data.iloc[-1, BTC_idx]
                         else:
                             amount_sell_now = strategy_dict['amount_sell']
-                        print('selling', amount_sell_now, 'BTC')
+                        print('selling', amount_sell_now, 'BTC for ', price, 'USD')
                         eval_data.iloc[-1, dUSD_idx] += price*amount_sell_now
                         eval_data.iloc[-1, dBTC_idx] -= amount_sell_now
         else:
@@ -155,8 +153,8 @@ def trade(exchange, symbol, strategy_dict, filename='trade_gdax',
                     print('real trading not implemented yet')
 
         # concatenate data (with all new columns)
-        all_data = all_data.iloc[:-1, :]
-        all_data = all_data.append(eval_data.iloc[-1, :].copy(),
+        all_data = all_data.iloc[:-2, :]
+        all_data = all_data.append(eval_data.iloc[-2:, :].copy(),
                                    ignore_index=True)
 
         # save
