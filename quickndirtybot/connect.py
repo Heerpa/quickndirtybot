@@ -38,9 +38,28 @@ def concat(old_data, add_data):
         if len(add_data.index) == 0:
             return old_data
         timeidx = list(add_data.columns).index('time')
-        realolddata_idx = old_data.loc[:, 'time'] >= add_data.iloc[-1, timeidx]
+        realolddata_idx = old_data.loc[:, 'time'] < add_data.iloc[0, timeidx]
+        old_overwrite = old_data.loc[np.logical_not(realolddata_idx.values), :]
+        # old_overwrite = old_data.loc[old_data['time'] >= add_data.iloc[0, timeidx], :]
+        if len(old_overwrite.index) > len(add_data.index):
+            print('new data is shorter, so I can just keep the old one')
+            return old_data
         old_data = old_data.loc[realolddata_idx, :]
         new_data = old_data.append(add_data, ignore_index=True)
+
+        # some evaluation columns would be overwritten by nans of new data
+        # copy only these columns from the old data
+        add_data_cols = list(add_data.columns)
+        new_data_cols = list(new_data.columns)
+        eval_cols = [col for col in new_data_cols if col not in add_data_cols]
+        try:
+            new_data.loc[old_overwrite.index, tuple(eval_cols)] = old_overwrite.loc[:, tuple(eval_cols)]
+        except Exception as e:
+            print('new_data index')
+            print(new_data.index)
+            print('old overwrite index')
+            print(old_overwrite.index)
+            print('Error: ', e)
     return new_data
 
 
@@ -124,11 +143,19 @@ def download_orderbook(exchange, symbol='BTC/USD', interval=5):
         time.sleep(interval)  # in seconds
 
 
-def check_credentials(exchange, key, secret, password=None):
-    exchange.apiKey = key
-    exchange.secret = secret
-    if password:
-        exchange.password = password
+def check_credentials(exchange, credentials):
+    exchange.apiKey = credentials['key']
+    exchange.secret = credentials['secret']
+    if 'password' in credentials.keys():
+        exchange.password = credentials['password']
+
+
+def get_funds(exchange, symbols=['USD', 'BTC']):
+    balance = exchange.fetch_balance()
+    # funds = {}
+    # for symbol in symbols:
+    #     funds[symbol] = balance[symbol]['total']
+    return {symbol: balance[symbol]['total'] for symbol in symbols}
 
 
 def trade_market_buy(exchange, symbol, amount):

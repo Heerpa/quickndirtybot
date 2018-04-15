@@ -42,7 +42,7 @@ def measure(dataframe, smaperiod, minmaxperiod):
 #     moving_fun(dataframe, 'lowest', blanking=tperiod_smashort, duration=tperiod_minmax,
 #                newname='max-lo', fun=np.max)
     # quotient of max and min
-    dataframe['max/min'] = dataframe['max-lo-prev']/dataframe['min-hi-prev']
+    dataframe.loc[:, 'max/min'] = dataframe['max-lo-prev']/dataframe['min-hi-prev']
 
 
 def findbuy(dataframe, thresh_maxovermin=1.0075):

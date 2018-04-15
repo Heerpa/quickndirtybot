@@ -46,6 +46,7 @@ coverage.xml
 
 *config*
 
+config/
 data/
 *.csv
 *.xlsx

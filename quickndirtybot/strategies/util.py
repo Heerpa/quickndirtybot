@@ -11,7 +11,7 @@ def movingaverage(values, window):
 
 def moving_fun(dataframe, col, blanking, duration, newname='movmin', fun=min):
     """blanking: # timepoints between 'now' and evaluation. duration: # timepoints to evaluate"""
-    dataframe[newname] = np.nan
+    dataframe.loc[:, newname] = np.nan
     colidx = list(dataframe.columns).index(col)
     newnameidx = list(dataframe.columns).index(newname)
     datalen = len(dataframe)
