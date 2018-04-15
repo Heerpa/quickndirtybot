@@ -45,3 +45,7 @@ coverage.xml
 *miniconda.sh
 
 *config*
+
+data/
+*.csv
+*.xlsx
